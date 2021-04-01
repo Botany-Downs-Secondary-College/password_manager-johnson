@@ -1,2 +1,2 @@
 language = "python3"
-run = "python Password_Manager_0.3.py"
+run = "python Password_Manager.py"
