@@ -24,6 +24,7 @@ def install():
         print("Cryptography is installed!!!")
     else:
         print("Cryptography is already installed, no need for futher installation!")
+        pass
 
 def create(cap_user, st_password):
     if os.path.exists("{}_Password.txt".format(cap_user)):
@@ -136,6 +137,10 @@ def menu(cap_user):
             
             elif mode == 3:
                 exit()
+            
+            else:
+              print(f'{random.choice(no_option_list)}')
+
                 
         except ValueError:
             print(f'{random.choice(no_option_list)}')
