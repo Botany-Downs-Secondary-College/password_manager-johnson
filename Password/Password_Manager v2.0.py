@@ -1,17 +1,36 @@
-#Password Manageer v1.0
+#Password Manageer v2.0
 #Made by Johnson Zhang Copy-right
 #Pre-Realease Simple_Password_Manager
 #Creating a .txt file, Reading from .txt file, Write to .txt file
+#Added No_Option_List makes the program more human like
 #Added Encryption
+#Added function to check if Cryptography is installed on the computer
 
-import os.path, os
+import os.path, os, random
+no_option_list = ['There is no such option avaliable, please enter again!','You have entered an invalid option, please try again!','Your option is invalid, please enter again!','There is no option for what you have entered, try again!']
+
+def install():
+    import sys
+    import subprocess
+    import pkg_resources
+    
+    required = {'Cryptography'}
+    installed = {pkg.key for pkg in pkg_resources.working_set}
+    missing = required - installed
+    
+    if missing:
+        python = sys.executable
+        subprocess.check_call([python, '-m', 'pip', 'install', *missing], stdout=subprocess.DEVNULL)
+        print("Cryptography is installed!!!")
+    else:
+        print("Cryptography is already installed, no need for futher installation!")
 
 def create(cap_user, st_password):
     if os.path.exists("{}_Password.txt".format(cap_user)):
         passcheck(cap_user, st_password)
     else:
         print("\nWelcome {} ! Enjoy you experience by using our app!!!\n".format(cap_user))
-        mp = "################## MASTERKEY: {} ##################\nPlease Don't Change the MASTERKEY, as this is you personal login password!!!!\n############################################################\n".format(st_password)
+        mp = "################## MASTERKEY: {} ##############################\nPlease Don't Change the MASTERKEY, as this is you personal login password!!!!\n############################################################\n".format(st_password)
         file = open("{}_Password.txt".format(cap_user), 'w')
         file.write(mp)
         file.close()   
@@ -95,30 +114,36 @@ def read(cap_user):
     encryption(cap_user)
     
 def menu(cap_user):
-    print("\nHello {}, this is your personal password manager!".format(cap_user))
-    print("Please follow the instruction and enter the details you wants to save")
-    print("#####################################################################")
-    print("TO ADD PASSWORD PRESS 1\nTo VIEW PASSWORD PRESS 2\nEXIT PRESS 3")
-    mode = int(input("Please enter you number:\n>>> "))
-    if mode == 1:
+    while True:
+        try:
+            print("\nHello {}, this is your personal password manager!".format(cap_user))
+            print("Please follow the instruction and enter the details you wants to save")
+            print("#####################################################################")
+            print("TO ADD PASSWORD PRESS 1\nTo VIEW PASSWORD PRESS 2\nEXIT PRESS 3")
+            mode = int(input("Please enter you number:\n>>> "))
+            if mode == 1:
+                
+                username = input("Please enter the username to access the website:\n>>> ")
         
-        username = input("Please enter the username to access the website:\n>>> ")
-
-        password = input("Please enter the password here:\n>>> ")
-
-        website = input("Please enter the website address:\n>>> ")  
+                password = input("Please enter the password here:\n>>> ")
         
-        write(cap_user, username, password, website)
-  
-    elif mode == 2:
-        read(cap_user)
-    
-    elif mode == 3:
-        exit()
+                website = input("Please enter the website address:\n>>> ")  
+                
+                write(cap_user, username, password, website)
+          
+            elif mode == 2:
+                read(cap_user)
+            
+            elif mode == 3:
+                exit()
+                
+        except ValueError:
+            print(f'{random.choice(no_option_list)}')
+
         
 def main():
     print("############################################################")
-    print("Welcome to Password_manager pre_realeas v 1.0")
+    print("Welcome to Password_manager pre_realeas v 2.0")
     print("############################################################")
     print("""\nIf you're a new user, kindly give us your 
     name and we will register a account for you!\n""")
@@ -138,14 +163,21 @@ def main():
     create(cap_user, st_password)
         
 #Main Program
+install()
 print("##################################")
-print("Password_Manager Pre_Release v1.0")
+print("Password_Manager Pre_Release v2.0")
 print("##################################")
-age = float(input("Your age Please!\n>>> "))
-
-    
-if age < 13:
-    print("Not old enought :(")
-    exit()
-elif age >= 13:
-    main()
+while True:
+    try:
+        age = float(input("Your age Please!\n>>> "))
+        if age < 13:
+            print("Not old enought :(")
+            exit()
+        elif age >= 13:
+            main()
+            
+    except ValueError:
+        print(f'{random.choice(no_option_list)}')
+        print("ENTER A NUMBER!!!!")
+        
+        
