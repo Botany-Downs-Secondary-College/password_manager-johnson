@@ -24,11 +24,35 @@ def install():
         print("Cryptography is installed!!!")
     else:
         print("Cryptography is already installed, no need for futher installation!")
-        pass
 
 def create(cap_user, st_password):
     if os.path.exists("{}_Password.txt".format(cap_user)):
-        passcheck(cap_user, st_password)
+        from cryptography.fernet import Fernet
+        # using the key
+        with open('filekey.key', 'rb') as filekey:
+            key = filekey.read()
+        fernet = Fernet(key)
+          
+        # opening the encrypted file
+        with open('{}_Password.txt'.format(cap_user), 'rb') as enc_file:
+            encrypted = enc_file.read()
+          
+        # decrypting the file
+        decrypted = fernet.decrypt(encrypted)
+          
+        # opening the file in write mode and
+        # writing the decrypted data
+        with open('{}_Password.txt'.format(cap_user), 'wb') as dec_file:
+            dec_file.write(decrypted)   
+
+        if passcheck('{}_Password.txt'.format(cap_user), 'MASTERKEY: {}'.format(st_password)):
+            print("Please do add Password after you signed in !!!!")
+            global rise 
+            rise = 1
+            menu(cap_user)
+            
+        else:
+            main()            
     else:
         print("\nWelcome {} ! Enjoy you experience by using our app!!!\n".format(cap_user))
         mp = "################## MASTERKEY: {} ##############################\nPlease Don't Change the MASTERKEY, as this is you personal login password!!!!\n############################################################\n".format(st_password)
@@ -38,14 +62,15 @@ def create(cap_user, st_password):
         print("Your login detail has been created!!!!")
         menu(cap_user)
 
-def passcheck(cap_user, st_password):
-    with open('{}_Password.txt'.format(cap_user)) as f:
-        if 'MASTERKEY: {}'.format(st_password) in f.read():
-            print("Welcome back! {}".format(cap_user)) 
-            menu(cap_user)
-        else:
-            print("Wrong User!!!\n")
-            main()
+def passcheck(file_name, string_to_search):    
+    with open(file_name, 'r') as read_obj:
+        # Read all lines in the file one by one
+        for line in read_obj:
+            # For each line, check if line contains the string
+            if string_to_search in line:
+                return True
+    return False
+
 
 def write(cap_user, username, password, website):   
     file = open("{}_Password.txt".format(cap_user), 'a')
@@ -137,10 +162,6 @@ def menu(cap_user):
             
             elif mode == 3:
                 exit()
-            
-            else:
-              print(f'{random.choice(no_option_list)}')
-
                 
         except ValueError:
             print(f'{random.choice(no_option_list)}')
